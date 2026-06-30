@@ -13,7 +13,7 @@ interface RequestWithRawBody extends Request {
 
 @Injectable()
 export class DiscordSignatureGuard implements CanActivate {
-  canActivate(context: ExecutionContext): boolean {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const publicKey = process.env.DISCORD_APPLICATION_PUBLIC_KEY;
     const request = context.switchToHttp().getRequest<RequestWithRawBody>();
 
@@ -30,8 +30,7 @@ export class DiscordSignatureGuard implements CanActivate {
     const cleanSignature = Array.isArray(signature) ? signature[0] : signature;
     const cleanTimestamp = Array.isArray(timestamp) ? timestamp[0] : timestamp;
 
-    // FIX: Removed 'await' from verifyKey since it's a synchronous function
-    const isValidRequest = verifyKey(
+    const isValidRequest = await verifyKey(
       rawBody,
       cleanSignature,
       cleanTimestamp,
