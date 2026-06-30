@@ -35,6 +35,15 @@ export class DiscordController {
           },
         });
       }
+
+      if (name === 'roadmap') {
+        return res.status(200).send({
+          type: InteractionResponseType.ChannelMessageWithSource,
+          data: {
+            content: 'Roadmap, Week 1...',
+          },
+        });
+      }
     }
 
     return res.status(400).send('Unknown interaction type');
