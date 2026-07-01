@@ -7,6 +7,9 @@ import { ComponentHandler } from './handlers/component.handler';
 import { HelloCommandHandler } from './handlers/hello-command.handler';
 import { RoadmapCommandHandler } from './handlers/roadmap-command.handler';
 import { RoadmapComponentHandler } from './handlers/roadmap-component.handler';
+import { FeedbackHandler } from './handlers/feedback.handler';
+import { FeedbackModalHandler } from './handlers/feedback-modal.handler';
+import { ModalSubmitHandler } from './handlers/modal-submit.handler';
 
 @Module({
   controllers: [DiscordController],
@@ -15,9 +18,12 @@ import { RoadmapComponentHandler } from './handlers/roadmap-component.handler';
     PingHandler,
     SlashCommandHandler,
     ComponentHandler,
+    ModalSubmitHandler,
     HelloCommandHandler,
     RoadmapCommandHandler,
     RoadmapComponentHandler,
+    FeedbackHandler,
+    FeedbackModalHandler,
   ],
 })
 export class DiscordModule {}

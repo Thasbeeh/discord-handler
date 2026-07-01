@@ -7,6 +7,7 @@ import {
 import { PingHandler } from './ping.handler';
 import { SlashCommandHandler } from './slash-command.handler';
 import { ComponentHandler } from './component.handler';
+import { ModalSubmitHandler } from './modal-submit.handler';
 
 @Injectable()
 export class InteractionHandler {
@@ -14,6 +15,7 @@ export class InteractionHandler {
     private readonly pingHandler: PingHandler,
     private readonly slashCommandHandler: SlashCommandHandler,
     private readonly componentHandler: ComponentHandler,
+    private readonly modalSubmitHandler: ModalSubmitHandler,
   ) {}
 
   handle(interaction: APIInteraction) {
@@ -28,6 +30,9 @@ export class InteractionHandler {
 
       case InteractionType.MessageComponent:
         return this.componentHandler.handle(interaction);
+
+      case InteractionType.ModalSubmit:
+        return this.modalSubmitHandler.handle(interaction);
 
       default:
         throw new BadRequestException(

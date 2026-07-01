@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model CommandConfig {
+  id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId     String  @map("guild_id")
+  commandName String  @map("command_name")
+  isEnabled   Boolean @default(true) @map("is_enabled")
+
+  /// Flexible JSON to store specific rules (e.g., allowed channels, required roles)
+  rules Json?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Ensures a command is only configured once per guild
+  @@unique([guildId, commandName])
+  @@map("command_configs")
+}
+
+model InteractionLog {
+  id              String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId         String? @map("guild_id") // Nullable in case of DMs
+  userId          String  @map("user_id")
+  username        String
+  interactionType String  @map("interaction_type") // e.g., APPLICATION_COMMAND, MESSAGE_COMPONENT
+  identifier      String // The command name or custom_id (e.g., "hello", "next_week_2")
+
+  /// The raw payload or extracted options from the interaction
+  payload Json?
+
+  /// Tracks if the interaction was successfully mirrored to Slack/Secondary channel
+  mirrorStatus String @default("PENDING") @map("mirror_status")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([guildId])
+  @@index([userId])
+  @@map("interaction_logs")
+}
+
+model FeedbackLog {
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId  String? @map("guild_id")
+  userId   String  @map("user_id")
+  username String
+
+  /// The actual feedback text extracted from the modal components
+  feedbackText String @map("feedback_text") @db.Text
+
+  /// E.g., UNREAD, REVIEWED, RESOLVED
+  status String @default("UNREAD")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([guildId])
+  @@map("feedback_logs")
+}
